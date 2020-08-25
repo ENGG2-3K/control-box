@@ -1,5 +1,7 @@
 #include "lib.h"
 
+unsigned long last_button_press_time;
+
 void setup()
 {
     init_buttons();
@@ -16,8 +18,9 @@ void loop()
     {
         enter_emergency_state();
     }
-    else
+    else if (millis() - last_button_press_time > BUTTON_TIMEOUT)
     {
+        last_button_press_time = millis();
         send_char(pressed_button.button_char);
     }
 

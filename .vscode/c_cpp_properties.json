@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "name": "Arduino",
+            "includePath": ["/Applications/Arduino.app/Contents/Java/**"],
+            "forcedInclude": [
+                "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/Arduino.h"
+            ]
+        }
+    ],
+    "version": 4
+}
