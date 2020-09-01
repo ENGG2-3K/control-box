@@ -4,7 +4,6 @@
 unsigned long last_button_press_time;
 
 // Global array of buttons
-button buttons[4];
 button pressed_button;
 mega_info rcvd_info;
 
@@ -12,7 +11,7 @@ void setup()
 {
     init_buttons(buttons);
 
-    // init_lcd();
+    init_lcd();
 }
 
 void loop()
