@@ -25,4 +25,9 @@ void loop()
     }
 
     rcvd_info = check_link_buffer();
+
+    if (rcvd_info.rcvd_char == RCV_EMERGENCY_CHAR)
+    {
+        enter_emergency_state();
+    }
 }
