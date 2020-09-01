@@ -5,6 +5,8 @@ unsigned long last_button_press_time;
 
 // Global array of buttons
 button buttons[4];
+button pressed_button;
+mega_info rcvd_info;
 
 void setup()
 {
@@ -15,6 +17,7 @@ void setup()
 
 void loop()
 {
+
     // Update the LCD with the information we received from the mega and any info we want inputted by the latest pressed button
     update_lcd(pressed_button, rcvd_info);
 
@@ -26,7 +29,7 @@ void loop()
     // If there has been a long enough timeout since the last button press, then update the last button press time, get the newly pressed button and send the relevant char to the mega
     else if (millis() - last_button_press_time > BUTTON_TIMEOUT)
     {
-        pressed_button = get_pressed_button();
+        pressed_button = get_pressed_button(buttons);
         char index_of_char = pressed_button.chars[pressed_button.toggled];
         send_char(pressed_button.chars[index_of_char]);
         last_button_press_time = millis();
