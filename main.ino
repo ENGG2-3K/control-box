@@ -23,7 +23,6 @@ void loop()
     else if (millis() - last_button_press_time > BUTTON_TIMEOUT)
     {
         last_button_press_time = millis();
-        send_char(pressed_button.button_char);
     }
 
     rcvd_info = check_link_buffer();
