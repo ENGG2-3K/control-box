@@ -14,6 +14,8 @@ void loop()
 
     pressed_button = get_pressed_button();
 
+    send_char(pressed_button.button_char);
+
     if (pressed_button.code == EMERGENCY_CODE)
     {
         enter_emergency_state();
