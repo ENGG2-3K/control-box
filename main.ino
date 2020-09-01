@@ -35,6 +35,6 @@ void loop()
         last_button_press_time = millis();
     }
 
-    // Check if there is information from the mega that has been send to us and store it into a mega_info struct
+    // Check if there is information from the mega that has been sent to us and store it into a mega_info struct
     rcvd_info = check_link_buffer();
 }
