@@ -6,7 +6,13 @@
 unsigned long last_button_press_time;
 
 // Global array of buttons
+button buttons[4];
+
+// Last pressed button - The one we are acting on now
 button pressed_button;
+
+// Example setup
+// pin layout used - tinkercad arduino lcd template
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
 // Represents the info we receive from the mega
@@ -14,24 +20,11 @@ mega_info rcvd_info;
 
 void setup()
 {
+    // Initialises the buttons as input pullup and returns and fills the buttons array with button
+    // structs
     init_buttons(buttons);
 
-    /*
-    The circuit:
-        * LCD RS pin to digital pin 12
-        * LCD Enable pin to digital pin 11
-        * LCD D4 pin to digital pin 5
-        * LCD D5 pin to digital pin 4
-        * LCD D6 pin to digital pin 3
-        * LCD D7 pin to digital pin 2
-        * LCD R/W pin to ground
-        * LCD VSS pin to ground
-        * LCD VCC pin to 5V
-        * 10K resistor:
-        * ends to +5V and ground
-        * wiper to LCD VO pin (pin 3)
-    */
-    // set up the LCD's number of columns and rows:
+    // Set up the LCD's number of columns and rows:
     lcd.begin(16, 2);
     // Print a message to the LCD.
     lcd.print("hello, world!");
@@ -49,15 +42,27 @@ void loop()
     // No need to update the lcd here because we already do it at the beginning of loop()
     if (pressed_button.chars[0] == 'e' || rcvd_info.rcvd_char == RCV_EMERGENCY_CHAR)
     {
+        // Endless while loop at the moment
         enter_emergency_state();
     }
     // If there has been a long enough timeout since the last button press, then update the last
     // button press time, get the newly pressed button and send the relevant char to the mega
     else if (abs(millis() - last_button_press_time > BUTTON_TIMEOUT))
     {
+        // Updates the state of the button structs in buttons and returns the most recently pressed
+        // button
         pressed_button = get_pressed_button(buttons);
+
+        // Neat trick we can do with button.toggled since every button has two chars except the
+        // emergency button
         char index_of_char = pressed_button.chars[pressed_button.toggled];
+
+        // Send the correspending character to the mega
         send_char(pressed_button.chars[index_of_char]);
+
+        // Reset last button press time
+        // We do this after we send the data to the mega so their timing is as close to ours as
+        // possible
         last_button_press_time = millis();
     }
 

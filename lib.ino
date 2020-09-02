@@ -62,6 +62,10 @@ void enter_emergency_state()
     }
 }
 
-void send_char(char c) {}
+// Link send char code goes here
+void send_char(char c)
+{
+}
 
+// Link receive info code goes here
 mega_info check_link_buffer() {}

@@ -9,8 +9,6 @@ const char BUTTON_END_PIN = 5;
 const int EMERGENCY_CODE = 404;
 const int BUTTON_TIMEOUT = 1000; // 1 second
 
-button buttons[4];
-
 void init_buttons(button *buttons);
 void update_lcd(LiquidCrystal *lcd, button b, mega_info rcvd_info);
 void enter_emergency_state();
