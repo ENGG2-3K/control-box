@@ -1,3 +1,5 @@
+#ifndef BUTTON_H
+#define BUTTON_H
 // Each button will contain state saying whether:
 // * It has been toggled or not
 // * Which pin it is attached to
@@ -10,3 +12,4 @@ typedef struct button
     char chars[2];   // The two possible characters than can be sent for this button
     char toggled;    // Whether the button has been toggled or not
 } button;
+#endif

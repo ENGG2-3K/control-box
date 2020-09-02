@@ -1,10 +1,11 @@
+#include <LiquidCrystal.h>
 #include "button.h"
 #include "lib.h"
 
-int init_buttons(button *buttons)
+void init_buttons(button *buttons)
 {
     // Sets the pin mode for each button and modifies an array of button structs representing the buttons
-    for (size_t i = BUTTON_START_PIN; i < BUTTON_END_PIN; i++)
+    for (int i = BUTTON_START_PIN; i < BUTTON_END_PIN; i++)
     {
         pinMode(i, INPUT_PULLUP);
         buttons[i - BUTTON_START_PIN].pin_number = i;
@@ -28,6 +29,15 @@ int init_buttons(button *buttons)
     buttons[3].chars[1] = 'c';
 }
 
+void update_lcd(LiquidCrystal *lcd, button b, mega_info rcvd_info)
+{
+    // set the cursor to column 0, line 1
+    // (note: line 1 is the second row, since counting begins with 0):
+    lcd->setCursor(0, 1);
+    // print the number of seconds since reset:
+    lcd->print(millis() / 1000);
+}
+
 // Updates the global array of buttons and returns the updated pressed button
 button get_pressed_button(button *buttons)
 {
@@ -44,10 +54,14 @@ button get_pressed_button(button *buttons)
 }
 
 // IDK what to do here
-int enter_emergency_state()
+void enter_emergency_state()
 {
     while (1)
     {
         /* code */
     }
 }
+
+void send_char(char c) {}
+
+mega_info check_link_buffer() {}
