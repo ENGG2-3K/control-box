@@ -36,6 +36,25 @@ void update_lcd(LiquidCrystal *lcd, button b, mega_info rcvd_info)
     lcd->setCursor(0, 1);
     // print the number of seconds since reset:
     lcd->print(millis() / 1000);
+
+    switch (rcvd_info.rcvd_char)
+    {
+    case 'a':
+        Serial.println("rcvd: 'a' - Accelerating");
+        break;
+    case 'd':
+        Serial.println("rcvd: 'd' - Decelerating");
+        break;
+    case 'n':
+        Serial.println("rcvd: 'n' - Constant speed");
+        break;
+    case 's':
+        Serial.println("rcvd: 's' - Stopped");
+        break;
+    case 'x':
+        Serial.println("rcvd: 'x' - Emergency stop");
+        break;
+    }
 }
 
 // Updates the global array of buttons and returns the updated pressed button
@@ -53,7 +72,6 @@ button get_pressed_button(button *buttons)
     }
 }
 
-// IDK what to do here
 void enter_emergency_state()
 {
     while (1)
