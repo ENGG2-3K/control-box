@@ -20,6 +20,13 @@ mega_info rcvd_info;
 
 void setup()
 {
+    Serial.begin(9600);
+    Serial.print("Sketch:   ");
+    Serial.println(__FILE__);
+    Serial.print("Uploaded: ");
+    Serial.println(__DATE__);
+    Serial.println(" ");
+
     // Initialises the buttons as input pullup and returns and fills the buttons array with button
     // structs
     init_buttons(buttons);
@@ -40,7 +47,7 @@ void loop()
     // Check if the last pressed button was the emergency button or the mega has told us to go
     // into the emergency state.
     // No need to update the lcd here because we already do it at the beginning of loop()
-    if (pressed_button.chars[0] == 'e' || rcvd_info.rcvd_char == RCV_EMERGENCY_CHAR)
+    if (pressed_button.chars[0] == EMERGENCY_STOP_CHAR || rcvd_info.rcvd_char == RCV_EMERGENCY_CHAR)
     {
         // Endless while loop at the moment
         enter_emergency_state();
