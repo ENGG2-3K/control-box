@@ -1,6 +1,5 @@
 #ifndef LIB_H
 #define LIB_H
-#include <LiquidCrystal.h>
 #include "button.h"
 #include "mega_info.h"
 
@@ -20,11 +19,11 @@ const char RCV_EMERGENCY_CHAR = 'x';
 const char RCV_DECELERATE_CHAR = 'd';
 const char RCV_CONSTANT_SPEED_CHAR = 'n';
 const char RCV_STOPPED_CHAR = 's';
-const char RCV_EMERGENCY_CHAR = 'x';
 const char RCV_ACCELERATE_CHAR = 'a';
 
 void init_buttons(button *buttons);
-void update_lcd(LiquidCrystal *lcd, button b, mega_info rcvd_info);
+void init_lcd();
+void update_lcd(LiquidCrystal_PCF8574 &lcd, button pressed_button, mega_info rcvd_info);
 void enter_emergency_state();
 void send_char(char c);
 button get_pressed_button(button *buttons);

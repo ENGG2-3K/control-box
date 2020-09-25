@@ -1,4 +1,4 @@
-#include <LiquidCrystal.h>
+#include <LiquidCrystal_PCF8574.h>
 #include "button.h"
 #include "lib.h"
 
@@ -18,6 +18,8 @@
         [3][0] - Open - 'o' 
         [3][1] - Close - 'c'
 */
+
+bool is_east = true;
 
 void init_buttons(button *buttons)
 {
@@ -46,32 +48,37 @@ void init_buttons(button *buttons)
     buttons[3].chars[1] = DOOR_CLOSE_CHAR;
 }
 
-void update_lcd(LiquidCrystal *lcd, button b, mega_info rcvd_info)
+void update_lcd(LiquidCrystal_PCF8574 *lcd, button b, mega_info rcvd_info)
 {
-    // set the cursor to column 0, line 1
-    // (note: line 1 is the second row, since counting begins with 0):
-    lcd->setCursor(0, 1);
-    // print the number of seconds since reset:
-    lcd->print(millis() / 1000);
+    // Clear the lcd screen
+    lcd->clear();
 
     switch (rcvd_info.rcvd_char)
     {
     case RCV_ACCELERATE_CHAR:
         Serial.println("rcvd: 'a' - Accelerating");
+        lcd->print("Accelerating");
         break;
     case RCV_DECELERATE_CHAR:
         Serial.println("rcvd: 'd' - Decelerating");
+        lcd->print("Decelerating");
         break;
     case RCV_CONSTANT_SPEED_CHAR:
         Serial.println("rcvd: 'n' - Constant speed");
+        lcd->print("Constant speed");
         break;
     case RCV_STOPPED_CHAR:
         Serial.println("rcvd: 's' - Stopped");
+        lcd->print("Stopped");
         break;
     case RCV_EMERGENCY_CHAR:
         Serial.println("rcvd: 'x' - Emergency stop");
+        lcd->print("Emergency stop");
         break;
     }
+
+    lcd->setCursor(0, 1);
+    lcd->print(direction);
 }
 
 // Updates the global array of buttons and returns the updated pressed button
@@ -117,19 +124,33 @@ void send_char(char c)
 }
 
 // Link receive info code goes here
-mega_info check_link_buffer()
+mega_info check_link_buffer(char *direction)
 {
     char c;
+
     if (Serial.available())
     {
+
         c = Serial.read();
+    }
+
+    if (c == 'm')
+    {
+        c = Serial.read();
+
+        if (c == 'd')
+        {
+            is_east = !is_east;
+            *direction = is_east ? "East" : "West";
+        }
+
+        mega_info res = {.rcvd_char = c,
+                         .weight = 0};
+
+        return res;
     }
     else
     {
-        c = '_';
+        return rcvd_info;
     }
-    mega_info res = {.rcvd_char = c,
-                     .weight = 0};
-
-    return res;
 }

@@ -9,7 +9,7 @@
 typedef struct button
 {
     char pin_number; // The pin that the button is assigned to
-    char chars[2];   // The two possible characters than can be sent for this button
+    char *chars;     // The two possible characters than can be sent for this button
     char toggled;    // Whether the button has been toggled or not
 } button;
 #endif

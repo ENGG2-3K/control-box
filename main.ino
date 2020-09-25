@@ -1,4 +1,4 @@
-#include <LiquidCrystal.h>
+#include <LiquidCrystal_PCF8574.h>
 #include "mega_info.h"
 #include "lib.h"
 #include "button.h"
@@ -11,30 +11,24 @@ button buttons[4];
 // Last pressed button - The one we are acting on now
 button pressed_button;
 
-// Example setup
-// pin layout used - tinkercad arduino lcd template
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
-
 // Represents the info we receive from the mega
 mega_info rcvd_info;
 
+bool new_info = false;
+char *direction = "East";
+
+LiquidCrystal_PCF8574 lcd(0x27);
+
 void setup()
 {
+
     Serial.begin(9600);
-    Serial.print("Sketch:   ");
-    Serial.println(__FILE__);
-    Serial.print("Uploaded: ");
-    Serial.println(__DATE__);
-    Serial.println(" ");
 
     // Initialises the buttons as input pullup and returns and fills the buttons array with button
     // structs
     init_buttons(buttons);
 
-    // Set up the LCD's number of columns and rows:
-    lcd.begin(16, 2);
-    // Print a message to the LCD.
-    lcd.print("hello, world!");
+    init_lcd();
 }
 
 void loop()
@@ -42,7 +36,11 @@ void loop()
 
     // Update the LCD with the information we received from the mega and any info we want inputted
     // by the latest pressed button
-    update_lcd(&lcd, pressed_button, rcvd_info);
+    if (new_info)
+    {
+
+        update_lcd(&lcd, pressed_button, rcvd_info);
+    }
 
     // Check if the last pressed button was the emergency button or the mega has told us to go
     // into the emergency state.
@@ -75,5 +73,9 @@ void loop()
 
     // Check if there is information from the mega that has been sent to us and store it into a
     // mega_info struct
-    rcvd_info = check_link_buffer();
+    if (Serial.available())
+    {
+        new_info = true;
+        rcvd_info = check_link_buffer(direction);
+    }
 }
