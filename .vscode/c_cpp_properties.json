@@ -2,9 +2,16 @@
     "configurations": [
         {
             "name": "Arduino",
-            "includePath": ["/Applications/Arduino.app/Contents/Java/**"],
+            "includePath": [
+                "/Applications/Arduino.app/Contents/Java/**",
+                "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/**",
+                "/Users/jbertasso/Library/Arduino15/staging/libraries/LiquidCrystal_PCF8574-1.2.0/**"
+            ],
             "forcedInclude": [
                 "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/Arduino.h"
+            ],
+            "defines": [
+                "USBCON"
             ]
         }
     ],

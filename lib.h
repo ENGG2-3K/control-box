@@ -23,7 +23,7 @@ const char RCV_ACCELERATE_CHAR = 'a';
 
 void init_buttons(button *buttons);
 void init_lcd();
-void update_lcd(LiquidCrystal_PCF8574 &lcd, button pressed_button, mega_info rcvd_info);
+void update_lcd(button b, mega_info rcvd_info, bool is_east);
 void enter_emergency_state();
 void send_char(char c);
 button get_pressed_button(button *buttons);

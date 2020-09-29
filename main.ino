@@ -1,4 +1,3 @@
-#include <LiquidCrystal_PCF8574.h>
 #include "mega_info.h"
 #include "lib.h"
 #include "button.h"
@@ -15,19 +14,21 @@ button pressed_button;
 mega_info rcvd_info;
 
 bool new_info = false;
-char *direction = "East";
+bool is_east = true;
 
-LiquidCrystal_PCF8574 lcd(0x27);
+// LiquidCrystal_PCF8574 lcd(0x27);
 
 void setup()
 {
 
-    Serial.begin(9600);
+    // To be able to print debug info
+    
 
     // Initialises the buttons as input pullup and returns and fills the buttons array with button
     // structs
     init_buttons(buttons);
 
+    // Initialise LCD in lcd.ino
     init_lcd();
 }
 
@@ -36,10 +37,10 @@ void loop()
 
     // Update the LCD with the information we received from the mega and any info we want inputted
     // by the latest pressed button
-    if (new_info)
+    if (new_info == true)
     {
-
-        update_lcd(&lcd, pressed_button, rcvd_info);
+        // Update the lcd from lcd.ino
+        update_lcd(pressed_button, rcvd_info, is_east);
     }
 
     // Check if the last pressed button was the emergency button or the mega has told us to go
@@ -50,6 +51,7 @@ void loop()
         // Endless while loop at the moment
         enter_emergency_state();
     }
+
     // If there has been a long enough timeout since the last button press, then update the last
     // button press time, get the newly pressed button and send the relevant char to the mega
     else if (abs(millis() - last_button_press_time > BUTTON_TIMEOUT))
@@ -76,6 +78,6 @@ void loop()
     if (Serial.available())
     {
         new_info = true;
-        rcvd_info = check_link_buffer(direction);
+        rcvd_info = check_link_buffer();
     }
 }
