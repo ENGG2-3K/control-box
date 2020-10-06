@@ -1,17 +1,58 @@
 {
     "configurations": [
         {
-            "name": "Arduino",
+            "name": "!!! WARNING !!! AUTO-GENERATED FILE, PLEASE DO NOT MODIFY IT AND USE https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags"
+        },
+        {
+            "name": "Mac",
+            "macFrameworkPath": [],
             "includePath": [
-                "/Applications/Arduino.app/Contents/Java/**",
-                "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/**",
-                "/Users/jbertasso/Library/Arduino15/staging/libraries/LiquidCrystal_PCF8574-1.2.0/**"
+                "/Users/jbertasso/Repos/uni/engg-control-box/include",
+                "/Users/jbertasso/Repos/uni/engg-control-box/src",
+                "/Users/jbertasso/Repos/uni/engg-control-box/.pio/libdeps/uno/LiquidCrystal_PCF8574/src",
+                "/Users/jbertasso/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                "/Users/jbertasso/.platformio/packages/framework-arduino-avr/cores/arduino",
+                "/Users/jbertasso/.platformio/packages/framework-arduino-avr/variants/standard",
+                "/Users/jbertasso/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                "/Users/jbertasso/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                "/Users/jbertasso/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                "/Users/jbertasso/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                "/Users/jbertasso/.platformio/packages/tool-unity",
+                ""
             ],
-            "forcedInclude": [
-                "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/Arduino.h"
-            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "/Users/jbertasso/Repos/uni/engg-control-box/include",
+                    "/Users/jbertasso/Repos/uni/engg-control-box/src",
+                    "/Users/jbertasso/Repos/uni/engg-control-box/.pio/libdeps/uno/LiquidCrystal_PCF8574/src",
+                    "/Users/jbertasso/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                    "/Users/jbertasso/.platformio/packages/framework-arduino-avr/cores/arduino",
+                    "/Users/jbertasso/.platformio/packages/framework-arduino-avr/variants/standard",
+                    "/Users/jbertasso/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                    "/Users/jbertasso/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                    "/Users/jbertasso/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                    "/Users/jbertasso/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                    "/Users/jbertasso/.platformio/packages/tool-unity",
+                    ""
+                ]
+            },
             "defines": [
-                "USBCON"
+                "PLATFORMIO=50001",
+                "ARDUINO_AVR_UNO",
+                "F_CPU=16000000L",
+                "ARDUINO_ARCH_AVR",
+                "ARDUINO=10808",
+                "__AVR_ATmega328P__",
+                ""
+            ],
+            "intelliSenseMode": "clang-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "compilerPath": "/Users/jbertasso/.platformio/packages/toolchain-atmelavr/bin/avr-gcc",
+            "compilerArgs": [
+                "-mmcu=atmega328p",
+                ""
             ]
         }
     ],
