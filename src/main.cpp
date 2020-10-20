@@ -25,8 +25,6 @@ button pressed_button;
 mega_info rcvd_info;
 
 bool new_info = false;
-// bool is_east = true;
-
 
 /* ------DEBUG------- */
 char debug_buffer[2];
@@ -115,24 +113,15 @@ void loop()
 
     // Check if there is information from the mega that has been sent to us and store it into a
     // mega_info struct
-    if (BTSerial.available() > 0)
+    if (debug_link_info_available(debug_buffer) == true)
     {
-        Serial.println("main.loop:: BT info is available");
+        Serial.println("main.loop:: Debug info is available");
 
         new_info = true;
-        rcvd_info = check_link_buffer();
+        rcvd_info = debug_check_link_buffer(debug_buffer);
         debug_print_rcvd_info(rcvd_info);
         Serial.println();
     }
-    // if (debug_link_info_available(debug_buffer) == true)
-    // {
-    //     Serial.println("main.loop:: Debug info is available");
-
-    //     new_info = true;
-    // rcvd_info = debug_check_link_buffer(debug_buffer);
-    //     debug_print_rcvd_info(rcvd_info);
-    //     Serial.println();
-    // }
 
     LOOP_NUM++;
 }
