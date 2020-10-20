@@ -8,7 +8,7 @@
 #define BT_TX 9
 
 int new_link_info_available();
-mega_info new_check_link_buffer();
+mega_info check_link_buffer();
 
 SoftwareSerial BTSerial(BT_RX, BT_TX); // (RX, TX)
 
