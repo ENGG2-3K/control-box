@@ -6,7 +6,7 @@ LiquidCrystal_PCF8574 lcd(0x27); // set the LCD address to 0x27 for a 16 chars a
 
 bool is_east = true;
 bool started = false;
-bool door_open = false;
+bool door_open = true;
 
 char *prev_message;
 
@@ -28,6 +28,10 @@ void init_lcd()
     if (error != 0) {
         Serial.print("Error: ");
         Serial.print(error);
+    }
+    else
+    {
+        Serial.println("No LCD Error");
     }
 
     lcd.begin(16, 2); // initialize the lcd
@@ -51,7 +55,9 @@ void lcd_scroll() {
 
 void update_lcd(button b, mega_info rcvd_info)
 {
-    debug_print_button(b); 
+    if (b.chars[0] >= 0) {
+        debug_print_button(b); 
+    }
     char *to_print;
 
     // Clear the lcd screen
@@ -91,13 +97,13 @@ void update_lcd(button b, mega_info rcvd_info)
 
     switch (b.chars[0])
     {
-    case EAST_CHAR:
+    case WEST_CHAR:
         handle_direction_button(b.toggled);
         break;
-    case START_CHAR:
+    case STOP_CHAR:
         handle_start_stop_button(b.toggled);
         break;
-    case DOOR_OPEN_CHAR:
+    case DOOR_CLOSE_CHAR:
         handle_door_button(b.toggled);
         break;
     default:

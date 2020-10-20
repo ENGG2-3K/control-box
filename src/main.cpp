@@ -2,6 +2,15 @@
 #include "mega_info.h"
 #include "lib.h"
 #include "button.h"
+#include <SoftwareSerial.h>
+
+#define BT_RX 8
+#define BT_TX 9
+
+int new_link_info_available();
+mega_info new_check_link_buffer();
+
+SoftwareSerial BTSerial(BT_RX, BT_TX); // (RX, TX)
 
 unsigned long last_button_press_time;
 char last_sent_char = '_';
@@ -46,14 +55,13 @@ void setup()
     init_lcd();
 
     init_debug_buf();
+
+    BTSerial.begin(9600);
 }
 
 void loop()
 {
     get_debug_chars();
-
-    // lcd_scroll();
-
     // Update the LCD with the information we received from the mega and any info we want inputted
     // by the latest pressed button
     if (new_info == true)
@@ -93,7 +101,7 @@ void loop()
             // Serial.print("main:: char_to_send = ")
             if (char_to_send != last_sent_char)
             {
-                send_char(char_to_send);
+                send_char(char_to_send, BTSerial);
                 last_sent_char = char_to_send;
                 new_info = true;
             }
@@ -107,17 +115,24 @@ void loop()
 
     // Check if there is information from the mega that has been sent to us and store it into a
     // mega_info struct
-    if (debug_link_info_available(debug_buffer) == true)
+    if (BTSerial.available() > 0)
     {
-//        Serial.print("main.loop:: LOOP_NUM =");
-//        Serial.println(LOOP_NUM);
-        Serial.println("main.loop:: Debug info is available");
+        Serial.println("main.loop:: BT info is available");
 
         new_info = true;
-        rcvd_info = debug_check_link_buffer(debug_buffer);
+        rcvd_info = check_link_buffer();
         debug_print_rcvd_info(rcvd_info);
         Serial.println();
     }
+    // if (debug_link_info_available(debug_buffer) == true)
+    // {
+    //     Serial.println("main.loop:: Debug info is available");
+
+    //     new_info = true;
+    // rcvd_info = debug_check_link_buffer(debug_buffer);
+    //     debug_print_rcvd_info(rcvd_info);
+    //     Serial.println();
+    // }
 
     LOOP_NUM++;
 }
@@ -151,4 +166,22 @@ void get_debug_chars()
 void init_debug_buf() {
     debug_buffer[0] = '_';
     debug_buffer[1] = '_';
+}
+
+mega_info check_link_buffer()
+{
+    Serial.println("lib.check_link_buffer:: Reading debug link buffer char.");
+    char c = BTSerial.read();
+
+    Serial.print("lib.check_link_buffer:: Read link buffer char: ");
+    Serial.println(c);
+
+    mega_info res = {c, 0};
+
+    while (BTSerial.available() > 0)
+    {
+        BTSerial.read();
+    }
+
+    return res;
 }

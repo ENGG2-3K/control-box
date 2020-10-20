@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <SoftwareSerial.h>
 #include "button.h"
 #include "lib.h"
 
@@ -34,16 +35,16 @@ void init_buttons(button *buttons)
     buttons[0].chars[1] = EMERGENCY_STOP_CHAR;
 
     // East / West button
-    buttons[1].chars[0] = EAST_CHAR;
-    buttons[1].chars[1] = WEST_CHAR;
+    buttons[1].chars[0] = WEST_CHAR;
+    buttons[1].chars[1] = EAST_CHAR;
 
     // Start / Stop button
-    buttons[2].chars[0] = START_CHAR;
-    buttons[2].chars[1] = STOP_CHAR;
+    buttons[2].chars[0] = STOP_CHAR;
+    buttons[2].chars[1] = START_CHAR;
 
     // Doors open / close button
-    buttons[3].chars[0] = DOOR_OPEN_CHAR;
-    buttons[3].chars[1] = DOOR_CLOSE_CHAR;
+    buttons[3].chars[0] = DOOR_CLOSE_CHAR;
+    buttons[3].chars[1] = DOOR_OPEN_CHAR;
 }
 
 // Updates the global array of buttons and returns the updated pressed button
@@ -112,8 +113,9 @@ void enter_emergency_state()
 }
 
 // Link send char code goes here
-void send_char(char c)
+void send_char(char c, SoftwareSerial bt)
 {
+    bt.write(c);
     Serial.print("lib.send_char:: Sending char '");
     Serial.print(c);
     Serial.println("'");
@@ -137,7 +139,7 @@ mega_info debug_check_link_buffer(char debug_buffer[])
 {
     if (debug_buffer[0] == RCV_DEBUG_CHAR)
     {
-        Serial.println("lib.check_link_buffer:: Reading debug link buffer char.");
+        Serial.println("lib.debug_check_link_buffer:: Reading debug link buffer char.");
         char c = debug_buffer[1];
 
         mega_info res = {c, 0};

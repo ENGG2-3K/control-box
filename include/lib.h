@@ -1,5 +1,6 @@
 #ifndef LIB_H
 #define LIB_H
+#include <SoftwareSerial.h>
 #include "button.h"
 #include "mega_info.h"
 
@@ -33,14 +34,13 @@ void lcd_scroll();
 
 void enter_emergency_state();
 
-void send_char(char c);
+void send_char(char c, SoftwareSerial bt);
 
 button get_pressed_button(button *buttons);
 button debug_get_pressed_button(button *buttons, char *debug_buffer);
 
 bool debug_link_info_available(char* debug_buffer);
 
-mega_info check_link_buffer();
 mega_info debug_check_link_buffer(char *debug_buffer);
 
 void debug_print_rcvd_info(mega_info rcvd_info);
