@@ -61,7 +61,7 @@ button get_pressed_button(button *buttons)
         }
     }
 
-    return;
+    return button{-1, {-1, -1}, -1};
 }
 
 button debug_get_pressed_button(button buttons[], char debug_buffer[])
@@ -70,13 +70,11 @@ button debug_get_pressed_button(button buttons[], char debug_buffer[])
     
     if (c != BUTTON_DEBUG_CHAR)
     {
-        button ret = {'_', 0};
-        return ret;
+        return button{-1, {-1, -1}, -1};
     }
 
     Serial.println("lib.debug_get_pressed_button:: DEBUG - Checking for DEBUG_CHAR");
-    Serial.print("lib.debug_get_pressed_button:: DEBUG - Got ");
-    Serial.print("'");
+    Serial.print("lib.debug_get_pressed_button:: DEBUG - Got '");
     Serial.print(c);
     Serial.println("'");
 
@@ -158,9 +156,28 @@ mega_info debug_check_link_buffer(char debug_buffer[])
     }
 }
 
+mega_info check_link_buffer(SoftwareSerial &bt)
+{
+    Serial.println("lib.check_link_buffer:: Reading debug link buffer char.");
+    char c = bt.read();
+
+    Serial.print("lib.check_link_buffer:: Read link buffer char: ");
+    Serial.println(c);
+
+    mega_info res = {c, 0};
+
+    while (bt.available() > 0)
+    {
+        bt.read();
+    }
+
+    return res;
+}
+
 void debug_print_rcvd_info(mega_info rcvd_info)
 {
     Serial.print("lib.debug_print_rcvd_info:: RCVD CHAR: ");
     Serial.println(rcvd_info.rcvd_char);
+    Serial.println();
     // Serial.println(rcvd_info.rcvd_char);
 }

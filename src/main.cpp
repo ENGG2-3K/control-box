@@ -1,14 +1,12 @@
 #include <Arduino.h>
+#include <SoftwareSerial.h>
 #include "mega_info.h"
 #include "lib.h"
 #include "button.h"
-#include <SoftwareSerial.h>
 
+#define BAUD_RATE 9600
 #define BT_RX 8
 #define BT_TX 9
-
-int new_link_info_available();
-mega_info check_link_buffer();
 
 SoftwareSerial BTSerial(BT_RX, BT_TX); // (RX, TX)
 
@@ -37,10 +35,18 @@ void get_debug_chars();
 
 void setup()
 {
-    Serial.begin(9600);
+    Serial.begin(BAUD_RATE);
 
-    // wait on Serial to be available on Leonardo
+    // wait on Serial to be available on Arduino
     while (!Serial)
+    {
+        ;
+    }
+
+    BTSerial.begin(BAUD_RATE);
+
+    // wait on Serial to be available on Arduino
+    while (!BTSerial)
     {
         ;
     }
@@ -53,8 +59,6 @@ void setup()
     init_lcd();
 
     init_debug_buf();
-
-    BTSerial.begin(9600);
 }
 
 void loop()
@@ -83,7 +87,6 @@ void loop()
 
     // If there has been a long enough timeout since the last button press, then update the last
     // button press time, get the newly pressed button and send the relevant char to the mega
-
     else if (abs(millis() - last_button_press_time > BUTTON_TIMEOUT))
     {
         // Updates the state of the button structs in buttons and returns the most recently pressed
@@ -94,15 +97,13 @@ void loop()
         // Neat trick we can do with button.toggled since every button has two chars except the
         // emergency button
         char char_to_send = pressed_button.chars[pressed_button.toggled];
-        if (char_to_send != '_' && char_to_send != NULL) {
+        if (char_to_send != -1 && char_to_send != last_sent_char)
+        {
             // Send the correspending character to the mega
             // Serial.print("main:: char_to_send = ")
-            if (char_to_send != last_sent_char)
-            {
-                send_char(char_to_send, BTSerial);
-                last_sent_char = char_to_send;
-                new_info = true;
-            }
+            send_char(char_to_send, BTSerial);
+            last_sent_char = char_to_send;
+            new_info = true;
         }
 
         // Reset last button press time
@@ -113,14 +114,13 @@ void loop()
 
     // Check if there is information from the mega that has been sent to us and store it into a
     // mega_info struct
-    if (debug_link_info_available(debug_buffer) == true)
+    if (BTSerial.available() > 0)
     {
-        Serial.println("main.loop:: Debug info is available");
+        Serial.println("main.loop:: BT info is available");
 
-        new_info = true;
-        rcvd_info = debug_check_link_buffer(debug_buffer);
+        rcvd_info = check_link_buffer(BTSerial);
         debug_print_rcvd_info(rcvd_info);
-        Serial.println();
+        new_info = true;
     }
 
     LOOP_NUM++;
@@ -155,22 +155,4 @@ void get_debug_chars()
 void init_debug_buf() {
     debug_buffer[0] = '_';
     debug_buffer[1] = '_';
-}
-
-mega_info check_link_buffer()
-{
-    Serial.println("lib.check_link_buffer:: Reading debug link buffer char.");
-    char c = BTSerial.read();
-
-    Serial.print("lib.check_link_buffer:: Read link buffer char: ");
-    Serial.println(c);
-
-    mega_info res = {c, 0};
-
-    while (BTSerial.available() > 0)
-    {
-        BTSerial.read();
-    }
-
-    return res;
 }

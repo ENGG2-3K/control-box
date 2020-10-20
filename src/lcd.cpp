@@ -8,7 +8,7 @@ bool is_east = true;
 bool started = false;
 bool door_open = true;
 
-char *prev_message;
+String prev_message;
 
 unsigned long loop_count = 0;
 
@@ -58,7 +58,7 @@ void update_lcd(button b, mega_info rcvd_info)
     if (b.chars[0] >= 0) {
         debug_print_button(b); 
     }
-    char *to_print;
+    String to_print;
 
     // Clear the lcd screen
     lcd.setBacklight(256);
