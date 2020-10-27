@@ -9,6 +9,7 @@ bool started = false;
 bool door_open = true;
 
 String prev_message;
+String prev_button_lcd_str;
 
 unsigned long loop_count = 0;
 
@@ -40,9 +41,10 @@ void init_lcd()
     lcd.home();
     lcd.clear();
     prev_message = "Waiting for Mega...";
-    lcd.print("Waiting for Mega...");
+    lcd.print(prev_message);
+    prev_button_lcd_str = "East";
     lcd.setCursor(0, 1);
-    lcd.print("East");
+    lcd.print(prev_button_lcd_str);
 }
 
 void lcd_scroll() {
@@ -108,6 +110,8 @@ void update_lcd(button b, mega_info rcvd_info)
         break;
     default:
         Serial.println("lcd.update_lcd:: Pressed button chars don't match");
+        lcd.setCursor(0, 1);
+        lcd.print(prev_button_lcd_str);
         break;
     }
 
@@ -124,8 +128,10 @@ void handle_direction_button(bool toggled) {
     Serial.println("Direction button");
     lcd.setCursor(0, 1);
     if (is_east == true) {
+        prev_button_lcd_str = "East";
         lcd.print("East");
     } else {
+        prev_button_lcd_str = "West";
         lcd.print("West");
     }
 }
@@ -133,7 +139,7 @@ void handle_direction_button(bool toggled) {
 void handle_start_stop_button(bool toggled) {
     started = !toggled;
 
-    lcd.setCursor(6, 1);
+    lcd.setCursor(0, 1);
     if (started == true) {
         lcd.print("Stopping");
     } else {
@@ -144,10 +150,13 @@ void handle_start_stop_button(bool toggled) {
 void handle_door_button(bool toggled) {
     door_open = !toggled;
 
-    lcd.setCursor(6, 1);
-    if (door_open == true) {
+    lcd.setCursor(0, 1);
+    if (door_open == true)
+    {
         lcd.print("Door Opening");
-    } else {
+    }
+    else
+    {
         lcd.print("Door Closing");
     }
 }
