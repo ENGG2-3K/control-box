@@ -8,7 +8,7 @@
 #define BT_RX 8
 #define BT_TX 9
 
-SoftwareSerial BTSerial(BT_RX, BT_TX); // (RX, TX)
+SoftwareSerial BTSerial(BT_TX, BT_RX); // (RX, TX)
 
 unsigned long last_button_press_time;
 char last_sent_char = '_';
@@ -91,7 +91,8 @@ void loop()
     {
         // Updates the state of the button structs in buttons and returns the most recently pressed
         // button
-        pressed_button = debug_get_pressed_button(buttons, debug_buffer);
+        // pressed_button = debug_get_pressed_button(buttons, debug_buffer);
+        pressed_button = get_pressed_button(buttons);
         // pressed_button = get_pressed_button(buttons);
 
         // Neat trick we can do with button.toggled since every button has two chars except the
@@ -115,10 +116,13 @@ void loop()
     // Check if there is information from the mega that has been sent to us and store it into a
     // mega_info struct
     if (BTSerial.available() > 0)
+    // if (debug_link_info_available(debug_buffer) > 0)
     {
+
         Serial.println("main.loop:: BT info is available");
 
         rcvd_info = check_link_buffer(BTSerial);
+        // rcvd_info = debug_check_link_buffer(debug_buffer);
         debug_print_rcvd_info(rcvd_info);
         new_info = true;
     }

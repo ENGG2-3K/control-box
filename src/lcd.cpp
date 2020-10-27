@@ -17,6 +17,7 @@ void debug_print_button(button b);
 void handle_direction_button(bool toggled);
 void handle_start_stop_button(bool toggled);
 void handle_door_button(bool toggled);
+void handle_direction_rcv(char dir);
 
 void init_lcd()
 {
@@ -42,9 +43,9 @@ void init_lcd()
     lcd.clear();
     prev_message = "Waiting for Mega...";
     lcd.print(prev_message);
-    prev_button_lcd_str = "East";
-    lcd.setCursor(0, 1);
-    lcd.print(prev_button_lcd_str);
+    // prev_button_lcd_str = "East";
+    // lcd.setCursor(0, 1);
+    // lcd.print(prev_button_lcd_str);
 }
 
 void lcd_scroll() {
@@ -67,36 +68,6 @@ void update_lcd(button b, mega_info rcvd_info)
     lcd.home();
     lcd.clear();
 
-    switch (rcvd_info.rcvd_char)
-    {
-    case RCV_ACCELERATE_CHAR:
-        Serial.println("lcd.update_lcd:: rcvd: 'a' - Accelerating");
-        to_print = "Accelerating";
-        break;
-    case RCV_DECELERATE_CHAR:
-        Serial.println("lcd.update_lcd:: rcvd: 'd' - Decelerating");
-        to_print = "Decelerating";
-        break;
-    case RCV_CONSTANT_SPEED_CHAR:
-        Serial.println("lcd.update_lcd:: rcvd: 'n' - Constant speed");
-        to_print = "Constant Speed";
-        break;
-    case RCV_STOPPED_CHAR:
-        Serial.println("lcd.update_lcd:: rcvd: 's' - Stopped");
-        to_print = "Stopped";
-        break;
-    case RCV_EMERGENCY_CHAR:
-        Serial.println("lcd.update_lcd:: rcvd: 'x' - Emergency stop");
-        to_print = "Emergency Stop";
-        break;
-    default:
-        to_print = prev_message;
-        break;
-    }
-
-    prev_message = to_print;
-    lcd.print(to_print);
-
     switch (b.chars[0])
     {
     case WEST_CHAR:
@@ -115,6 +86,75 @@ void update_lcd(button b, mega_info rcvd_info)
         break;
     }
 
+    switch (rcvd_info.rcvd_char)
+    {
+    case RCV_ACCELERATE_CHAR:
+        Serial.println("lcd.update_lcd:: rcvd: 'a' - Accelerating");
+        to_print = "Accelerating";
+        break;
+    case RCV_DECELERATE_CHAR:
+        Serial.println("lcd.update_lcd:: rcvd: 'd' - Decelerating");
+        to_print = "Decelerating";
+        break;
+    case RCV_CONSTANT_SPEED_CHAR:
+        Serial.println("lcd.update_lcd:: rcvd: 'n' - Constant speed");
+        to_print = "Constant Speed";
+        break;
+    case RCV_STOPPED_CHAR:
+        Serial.println("lcd.update_lcd:: rcvd: 's' - Stopped");
+        to_print = "Stopped";
+        break;
+    case RCV_WEST_DECEL_CHAR:
+        Serial.println("lcd.update_lcd:: rcvd: '1' - West Decelerate");
+        to_print = "Decelerating";
+        handle_direction_rcv('w');
+        break;
+    case RCV_WEST_ACEL_CHAR:
+        Serial.println("lcd.update_lcd:: rcvd: '2' - West Accelerate");
+        to_print = "Accelerating";
+        handle_direction_rcv('w');
+        break;
+    case RCV_WEST_CONST_CHAR:
+        Serial.println("lcd.update_lcd:: rcvd: '3' - West Constant");
+        to_print = "Constant Speed";
+        handle_direction_rcv('w');
+        break;
+    case RCV_EAST_DECEL_CHAR:
+        Serial.println("lcd.update_lcd:: rcvd: '4' - East Decelerate");
+        to_print = "Decelerating";
+        handle_direction_rcv('e');
+        break;
+    case RCV_EAST_ACEL_CHAR:
+        Serial.println("lcd.update_lcd:: rcvd: '5' - East Accelerate");
+        to_print = "Accelerating";
+        handle_direction_rcv('e');
+        break;
+    case RCV_EAST_CONST_CHAR:
+        to_print = "Constant Speed";
+        Serial.println("lcd.update_lcd:: rcvd: '6' - East Constant");
+        handle_direction_rcv('e');
+        break;
+    // case RCV_EAST_CHAR:
+    //     Serial.println("lcd.update_lcd:: rcvd: 'e' - East");
+    //     handle_direction_rcv('e');
+    //     break;
+    // case RCV_WEST_CHAR:
+    //     Serial.println("lcd.update_lcd:: rcvd: 'w' - West");
+    //     handle_direction_rcv('w');
+    //     break;
+    case RCV_EMERGENCY_CHAR:
+        Serial.println("lcd.update_lcd:: rcvd: 'x' - Emergency stop");
+        to_print = "EMERGENCY STOP";
+        break;
+    default:
+        to_print = prev_message;
+        break;
+    }
+
+    prev_message = to_print;
+    lcd.home();
+    lcd.print(to_print);
+
     if (b.chars[0] == EMERGENCY_STOP_CHAR) {
         lcd.home();
         lcd.clear();
@@ -122,18 +162,19 @@ void update_lcd(button b, mega_info rcvd_info)
     }
 }
 
-void handle_direction_button(bool toggled) {
-    is_east = !toggled;
-
+void handle_direction_button(bool toggled)
+{
     Serial.println("Direction button");
-    lcd.setCursor(0, 1);
-    if (is_east == true) {
-        prev_button_lcd_str = "East";
-        lcd.print("East");
-    } else {
-        prev_button_lcd_str = "West";
-        lcd.print("West");
-    }
+    // lcd.setCursor(0, 1);
+    // if (is_east == true) {
+    //     prev_button_lcd_str = "East";
+    //     lcd.print("East");
+    // } else {
+    //     prev_button_lcd_str = "West";
+    //     lcd.print("West");
+    // }
+
+    is_east = !toggled;
 }
 
 void handle_start_stop_button(bool toggled) {
@@ -147,9 +188,8 @@ void handle_start_stop_button(bool toggled) {
     }
 }
 
-void handle_door_button(bool toggled) {
-    door_open = !toggled;
-
+void handle_door_button(bool toggled)
+{
     lcd.setCursor(0, 1);
     if (door_open == true)
     {
@@ -159,6 +199,17 @@ void handle_door_button(bool toggled) {
     {
         lcd.print("Door Closing");
     }
+
+    door_open = !toggled;
+}
+
+void handle_direction_rcv(char dir)
+{
+    lcd.setCursor(0, 1);
+    String to_print = dir == 'e' ? "East" : "West";
+    lcd.print(to_print);
+
+    is_east = !is_east;
 }
 
 void debug_print_button(button b) {

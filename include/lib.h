@@ -24,6 +24,14 @@ const char RCV_DECELERATE_CHAR = 'd';
 const char RCV_CONSTANT_SPEED_CHAR = 'n';
 const char RCV_STOPPED_CHAR = 's';
 const char RCV_ACCELERATE_CHAR = 'a';
+const char RCV_EAST_CHAR = 'e';
+const char RCV_WEST_CHAR = 'w';
+const char RCV_WEST_DECEL_CHAR = '1';
+const char RCV_WEST_ACEL_CHAR = '2';
+const char RCV_WEST_CONST_CHAR = '3';
+const char RCV_EAST_DECEL_CHAR = '4';
+const char RCV_EAST_ACEL_CHAR = '5';
+const char RCV_EAST_CONST_CHAR = '6';
 
 void init_buttons(button *buttons);
 
