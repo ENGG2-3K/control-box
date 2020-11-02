@@ -18,6 +18,8 @@ void handle_direction_button(bool toggled);
 void handle_start_stop_button(bool toggled);
 void handle_door_button(bool toggled);
 void handle_direction_rcv(char dir);
+void clear_top_row();
+void clear_bottom_row();
 
 void init_lcd()
 {
@@ -59,12 +61,12 @@ void lcd_scroll() {
 void update_lcd(button b, mega_info rcvd_info)
 {
     if (b.chars[0] >= 0) {
-        debug_print_button(b); 
+        debug_print_button(b);
     }
     String to_print;
 
     // Clear the lcd screen
-    lcd.setBacklight(256);
+    lcd.setBacklight(255);
     lcd.home();
     lcd.clear();
 
@@ -134,14 +136,14 @@ void update_lcd(button b, mega_info rcvd_info)
         Serial.println("lcd.update_lcd:: rcvd: '6' - East Constant");
         handle_direction_rcv('e');
         break;
-    // case RCV_EAST_CHAR:
-    //     Serial.println("lcd.update_lcd:: rcvd: 'e' - East");
-    //     handle_direction_rcv('e');
-    //     break;
-    // case RCV_WEST_CHAR:
-    //     Serial.println("lcd.update_lcd:: rcvd: 'w' - West");
-    //     handle_direction_rcv('w');
-    //     break;
+    case RCV_EAST_CHAR:
+        Serial.println("lcd.update_lcd:: rcvd: 'e' - East");
+        handle_direction_rcv('e');
+        break;
+    case RCV_WEST_CHAR:
+        Serial.println("lcd.update_lcd:: rcvd: 'w' - West");
+        handle_direction_rcv('w');
+        break;
     case RCV_EMERGENCY_CHAR:
         Serial.println("lcd.update_lcd:: rcvd: 'x' - Emergency stop");
         to_print = "EMERGENCY STOP";
@@ -153,6 +155,7 @@ void update_lcd(button b, mega_info rcvd_info)
 
     prev_message = to_print;
     lcd.home();
+    clear_top_row();
     lcd.print(to_print);
 
     if (b.chars[0] == EMERGENCY_STOP_CHAR) {
@@ -165,39 +168,38 @@ void update_lcd(button b, mega_info rcvd_info)
 void handle_direction_button(bool toggled)
 {
     Serial.println("Direction button");
-    // lcd.setCursor(0, 1);
-    // if (is_east == true) {
-    //     prev_button_lcd_str = "East";
-    //     lcd.print("East");
-    // } else {
-    //     prev_button_lcd_str = "West";
-    //     lcd.print("West");
-    // }
 
     is_east = !toggled;
 }
 
-void handle_start_stop_button(bool toggled) {
-    started = !toggled;
-
+void handle_start_stop_button(bool toggled)
+{
+    clear_bottom_row();
     lcd.setCursor(0, 1);
     if (started == true) {
         lcd.print("Stopping");
+        prev_button_lcd_str = "Stopping";
     } else {
         lcd.print("Starting");
+        prev_button_lcd_str = "Starting";
     }
+
+    started = !toggled;
 }
 
 void handle_door_button(bool toggled)
 {
+    clear_bottom_row();
     lcd.setCursor(0, 1);
     if (door_open == true)
     {
         lcd.print("Door Opening");
+        prev_button_lcd_str = "Door Opening";
     }
     else
     {
         lcd.print("Door Closing");
+        prev_button_lcd_str = "Door Closing";
     }
 
     door_open = !toggled;
@@ -205,11 +207,25 @@ void handle_door_button(bool toggled)
 
 void handle_direction_rcv(char dir)
 {
-    lcd.setCursor(0, 1);
     String to_print = dir == 'e' ? "East" : "West";
+
+    lcd.setCursor(0, 1);
+    clear_bottom_row();
     lcd.print(to_print);
 
     is_east = !is_east;
+}
+
+void clear_bottom_row()
+{
+    lcd.setCursor(0, 1);
+    lcd.print("                ");
+}
+
+void clear_top_row()
+{
+    lcd.setCursor(0, 0);
+    lcd.print("                ");
 }
 
 void debug_print_button(button b) {

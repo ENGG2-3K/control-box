@@ -104,6 +104,7 @@ button debug_get_pressed_button(button buttons[], char debug_buffer[])
     return buttons[b_index];
 }
 
+// Enter emergency mode and block forever until restarted
 void enter_emergency_state()
 {
     while (1)
@@ -119,20 +120,24 @@ void send_char(char c, SoftwareSerial bt)
     Serial.println("'");
 }
 
-bool debug_link_info_available(char* debug_buffer)
+mega_info check_link_buffer(SoftwareSerial &bt)
 {
-    if (debug_buffer[0] == RCV_DEBUG_CHAR)
-    {
-        return true;
+    Serial.println("lib.check_link_buffer:: Reading debug link buffer char.");
+    char c = bt.read();
 
-    }
-    else
+    Serial.print("lib.check_link_buffer:: Read link buffer char: ");
+    Serial.println(c);
+
+    mega_info res = {c, 0};
+
+    while (bt.available() > 0)
     {
-        return false;
+        bt.read();
     }
+
+    return res;
 }
 
-// Link receive info code goes here
 mega_info debug_check_link_buffer(char debug_buffer[])
 {
     if (debug_buffer[0] == RCV_DEBUG_CHAR)
@@ -156,22 +161,17 @@ mega_info debug_check_link_buffer(char debug_buffer[])
     }
 }
 
-mega_info check_link_buffer(SoftwareSerial &bt)
+bool debug_link_info_available(char* debug_buffer)
 {
-    Serial.println("lib.check_link_buffer:: Reading debug link buffer char.");
-    char c = bt.read();
-
-    Serial.print("lib.check_link_buffer:: Read link buffer char: ");
-    Serial.println(c);
-
-    mega_info res = {c, 0};
-
-    while (bt.available() > 0)
+    if (debug_buffer[0] == RCV_DEBUG_CHAR)
     {
-        bt.read();
-    }
+        return true;
 
-    return res;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void debug_print_rcvd_info(mega_info rcvd_info)

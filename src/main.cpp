@@ -26,7 +26,7 @@ bool new_info = false;
 
 /* ------DEBUG------- */
 char debug_buffer[2];
-int LOOP_NUM = 0;
+unsigned long LOOP_NUM = 0;
 
 void init_debug_buf();
 void print_debug_buffer();
@@ -93,7 +93,6 @@ void loop()
         // button
         // pressed_button = debug_get_pressed_button(buttons, debug_buffer);
         pressed_button = get_pressed_button(buttons);
-        // pressed_button = get_pressed_button(buttons);
 
         // Neat trick we can do with button.toggled since every button has two chars except the
         // emergency button
@@ -101,7 +100,8 @@ void loop()
         if (char_to_send != -1 && char_to_send != last_sent_char)
         {
             // Send the correspending character to the mega
-            // Serial.print("main:: char_to_send = ")
+            // Serial.print("main:: char_to_send = ");
+            // Serial.println(char_to_send);
             send_char(char_to_send, BTSerial);
             last_sent_char = char_to_send;
             new_info = true;
@@ -122,8 +122,7 @@ void loop()
         Serial.println("main.loop:: BT info is available");
 
         rcvd_info = check_link_buffer(BTSerial);
-        // rcvd_info = debug_check_link_buffer(debug_buffer);
-        debug_print_rcvd_info(rcvd_info);
+        // debug_print_rcvd_info(rcvd_info);
         new_info = true;
     }
 
